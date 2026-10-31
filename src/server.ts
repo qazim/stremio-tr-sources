@@ -174,13 +174,23 @@ export function createApp(runtime: Runtime, port = env.PORT) {
   });
   admin.use(express.json({ limit: '16kb', strict: true }));
   admin.get('/api/state', (_req, res) => {
-    let manifestUrl = `http://${getLanIp()}:${port}/manifest.json`;
-    try {
-      const savedTunnel = readFileSync(resolve('data/tunnel-url.txt'), 'utf8').trim();
-      if (savedTunnel.startsWith('https://')) {
-        manifestUrl = savedTunnel;
-      }
-    } catch {}
+let manifestUrl = `http://${getLanIp()}:${port}/manifest.json`;
+
+    if (process.env.PUBLIC_HOST) {
+      manifestUrl = `https://${process.env.PUBLIC_HOST}/manifest.json`;
+    } else {
+      try {
+        const savedTunnel = readFileSync(
+          resolve('data/tunnel-url.txt'),
+          'utf8',
+        ).trim();
+    
+        if (savedTunnel.startsWith('https://' )) {
+          manifestUrl = savedTunnel;
+        }
+      } catch {}
+    }
+
     res.json({
       csrf,
       settings: runtime.settings.get(),
