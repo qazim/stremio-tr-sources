@@ -31,7 +31,64 @@ async function load() {
   if (state.installUrl && !state.installUrl.startsWith('https://')) {
     setTimeout(load, 2500);
   }
-  checkUpdate();
+    checkUpdate();
+
+    byId('language').value = state.settings.language;
+    byId('quality').value = state.settings.quality;
+    byId('timeout').value = state.settings.providerTimeoutMs;
+    byId('threshold').value = state.settings.matchThreshold;
+
+    byId('providers').replaceChildren(
+      ...state.providers.map((provider) => {
+        const label = document.createElement('label');
+        label.className = 'provider';
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = provider.enabled;
+        input.dataset.providerId = provider.id;
+
+        const text = document.createElement('span');
+        text.textContent =
+          provider.name +
+          (provider.catalogOnly
+            ? ' · Katalog (oynatma desteklenmiyor)'
+            : '');
+
+        label.append(input, text);
+        return label;
+      }),
+    );
+
+    byId('cache').textContent =
+      `${state.cache.size} / ${state.cache.maxEntries} kayıt · ` +
+      `${state.cache.hits} cache hit · ${state.cache.misses} miss`;
+
+    byId('unsupported-sources').replaceChildren(
+      ...(state.unsupportedSources ?? []).map((source) => {
+        const row = document.createElement('div');
+        row.className = 'health-row';
+        row.textContent =
+          `${source.name} · Oynatım entegrasyonu tamamlanmadı`;
+
+        const detail = document.createElement('small');
+        detail.textContent = source.reason;
+        row.append(detail);
+
+        return row;
+      }),
+    );
+
+    byId('errors').replaceChildren(
+      ...state.errors.map((error) => {
+        const item = document.createElement('li');
+        item.textContent =
+          `${error.time} · ${error.providerId} · ${error.code}`;
+        return item;
+      }),
+    );
+  }
+
 }
 async function checkUpdate() {
   try {
