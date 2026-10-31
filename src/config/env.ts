@@ -22,6 +22,8 @@ const schema = z.object({
   AMBIGUITY_MARGIN: z.coerce.number().min(0).max(0.3).default(0.06),
   REMOTE_METADATA: z.enum(['true', 'false']).default('true'),
   PROVIDERS_FILE: z.string().default('data/providers.json'),
+  PUBLIC_DEPLOYMENT: z.enum(['true', 'false']).default('false'),
+  PUBLIC_HOST: z.string().optional(),
 });
 export function parseEnv(input: Record<string, unknown>) {
   return schema.parse(input);
