@@ -47,15 +47,23 @@ export function getProxyBaseUrl(): string {
   if (process.env.NODE_ENV === 'test') {
     return `http://${getLanHost()}`;
   }
+
+  if (process.env.PUBLIC_HOST) {
+    return `https://${process.env.PUBLIC_HOST}`;
+  }
+
   try {
     const tunnelPath = resolve(process.cwd(), 'data', 'tunnel-url.txt');
     if (existsSync(tunnelPath)) {
       const content = readFileSync(tunnelPath, 'utf8').trim();
-      if (content.startsWith('https://')) {
+
+      if (content.startsWith('https://' )) {
         return content.replace(/\/manifest\.json$/, '');
       }
     }
   } catch {}
+
   return `http://${getLanHost()}`;
 }
+
 
