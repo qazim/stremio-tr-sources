@@ -113,7 +113,10 @@ export function createApp(runtime: Runtime, port = env.PORT) {
       res.status(204).end();
       return;
     }
-    if (!isAllowedClientIp(req.socket.remoteAddress)) {
+    if (
+      process.env.PUBLIC_DEPLOYMENT !== 'true' &&
+      !isAllowedClientIp(req.socket.remoteAddress)
+    ) {
       res.status(403).json({ error: 'LOCAL_ONLY' });
       return;
     }
