@@ -151,9 +151,11 @@ export function createProxyRouter(): Router {
       }
 
       const text = await response.text();
-      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Cache-Control', 'no-cache');
+	res.status(200);
+	res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+	res.removeHeader('ETag');
 
       const baseUrl = new URL(targetUrl);
       const lines = text.split('\n');
@@ -290,7 +292,12 @@ export function createProxyRouter(): Router {
       res.status(response.status);
       res.setHeader('Content-Type', safeContentType);
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader(
+		  'Cache-Control',
+		  'no-store, no-cache, must-revalidate, max-age=0',
+		);
+		res.removeHeader('ETag');
+
       const contentRange = response.headers.get('content-range');
       if (contentRange) {
         res.setHeader('Content-Range', contentRange);

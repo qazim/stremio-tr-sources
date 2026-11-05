@@ -48,12 +48,17 @@ export function getProxyBaseUrl(): string {
     return `http://${getLanHost()}`;
   }
 
+  if (process.env.PUBLIC_BASE_URL) {
+    return process.env.PUBLIC_BASE_URL.replace(/\/$/, '');
+  }
+
   if (process.env.PUBLIC_HOST) {
     return `https://${process.env.PUBLIC_HOST}`;
   }
 
   try {
     const tunnelPath = resolve(process.cwd(), 'data', 'tunnel-url.txt');
+
     if (existsSync(tunnelPath)) {
       const content = readFileSync(tunnelPath, 'utf8').trim();
 
@@ -65,5 +70,8 @@ export function getProxyBaseUrl(): string {
 
   return `http://${getLanHost()}`;
 }
+
+
+
 
 

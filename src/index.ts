@@ -11,16 +11,29 @@ async function main() {
   await settings.load();
   const app = createApp(createRuntime(registry, settings));
   const bindHost = process.env.NODE_ENV === 'test' ? env.HOST : '0.0.0.0';
-  const server = app.listen(env.PORT, bindHost, () => {
+   const server = app.listen(env.PORT, bindHost, () => {
     const lanIp = getLanIp();
-    logger.info({ port: env.PORT, host: bindHost }, 'Stremio TR Sources ready');
+
+    const publicManifest = process.env.PUBLIC_HOST
+      ? `https://${process.env.PUBLIC_HOST}/manifest.json`
+      : `http://${lanIp}:${env.PORT}/manifest.json`;
+
+    logger.info(
+      { port: env.PORT, host: bindHost },
+      'Stremio TR Sources ready',
+    );
+
     console.log(
       `Yönetim (PC): http://127.0.0.1:${env.PORT}/admin/\n` +
       `Stremio (PC): http://127.0.0.1:${env.PORT}/manifest.json\n` +
-      `Stremio (Mobil / TV): http://${lanIp}:${env.PORT}/manifest.json`,
+      `Stremio (Mobil / TV): ${publicManifest}`,
     );
-    startTunnel(env.PORT);
+
+    if (process.env.USE_BUILTIN_TUNNEL === 'true') {
+	  startTunnel(env.PORT);
+	}
   });
+
   server.on('error', () => {
     logger.error({ code: 'LISTEN_FAILED' }, 'Cannot start local server');
     process.exitCode = 1;
@@ -29,7 +42,9 @@ async function main() {
   const shutdown = () => {
     if (closing) return;
     closing = true;
-    stopTunnel();
+    if (process.env.USE_BUILTIN_TUNNEL === 'true') {
+	  stopTunnel();
+	}
     const force = setTimeout(() => {
       server.closeAllConnections();
       process.exit(1);

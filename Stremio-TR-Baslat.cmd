@@ -17,9 +17,9 @@ if errorlevel 1 (
     exit /b 1
 )
 
-if not exist "node_modules\" (
-    echo [Paketler] Ilk calisma: Gerekli paketler yukleniyor (npm install)...
-    call npm.cmd install
+if not exist "node_modules" (
+    echo [Paketler] Ilk calisma: Gerekli paketler yukleniyor ^(npm install^)...
+    call npm install
     if errorlevel 1 (
         echo [HATA] Paketler yuklenemedi. Internet baglantinizi kontrol edin.
         pause
@@ -28,17 +28,17 @@ if not exist "node_modules\" (
 )
 
 if not exist "cloudflared.exe" (
-    echo [Tunel] Guvenli HTTPS tuneli (cloudflared.exe) indiriliyor...
+    echo [Tunel] Guvenli HTTPS tuneli ^(cloudflared.exe^) indiriliyor...
     powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe' -OutFile 'cloudflared.exe' -UseBasicParsing" >nul 2>nul
 )
 
-if not "%1"=="--no-update" (
-    echo [Guncelleme] GitHub surum kontrolu yapiliyor...
-    node scripts/updater.mjs --check-and-update
-)
+REM if not "%1"=="--no-update" (
+    REM echo [Guncelleme] GitHub surum kontrolu yapiliyor...
+    REM node scripts/updater.mjs --check-and-update
+REM )
 
 if not exist "dist\index.js" (
-    echo [Derleme] Ilk derleme yapiliyor (npm run build)...
+    echo [Derleme] Ilk derleme yapiliyor ^(npm run build^)...
     call npm.cmd run build
     if errorlevel 1 (
         echo Derleme basarisiz oldu.

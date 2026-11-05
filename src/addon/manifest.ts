@@ -1,8 +1,8 @@
 import type { ProviderRegistry } from '../providers/registry.js';
 import type { Manifest } from 'stremio-addon-sdk';
 export const manifest: Manifest = {
-  id: 'com.stremiotr.sources',
-  name: 'Stremio TR Sources',
+  id: 'com.stremiotr.sources.local',
+  name: 'Stremio TR Sources Local',
   version: '1.1.2',
   description:
     'Türkçe dizi ve film kaynakları (Film Makinesi, DiziBOX, HDFilmCehennemi, DiziLife).',

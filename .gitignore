@@ -9,3 +9,12 @@ data/runtime/
 scratch/
 cloudflared.exe
 data/tunnel-url.txt
+config.toml
+tunnel.log
+proxy-tunnel.log
+proxy-tunnel.log.*
+*.log
+
+bin/
+cloudflared.exe.disabled
+stream.json

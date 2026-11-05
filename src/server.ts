@@ -94,6 +94,7 @@ export function createApp(runtime: Runtime, port = env.PORT) {
   const app = express();
   const csrf = randomBytes(32).toString('hex');
   app.disable('x-powered-by');
+  app.disable('etag');
   app.set('trust proxy', false);
   const counters = new Map<
     string,
